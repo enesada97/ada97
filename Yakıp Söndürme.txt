@@ -1,0 +1,60 @@
+
+
+
+	LIST p=16F877A 				
+	include "P16F877A.inc"		
+	__config h'3f18'		
+
+
+PC equ h'02'					
+
+	cblock h'20'				;Deðiþken tanýmlama 
+	delay_1						;1. ve 2. gecikmeler için ram de 1 byte lýk yer ayýralým 		
+	delay_2						
+	endc						;gecikme metodunda kullanýlacak
+
+
+
+	org h'0000'					;Programý çalýþtýrmaya bu adresten baþla
+
+
+	movlw h'07'					;	Karþýlaþtýrýcýlarý kapat.
+	movwf CMCON 				;	Portlarý dijital olarak ayarla
+
+
+	bsf STATUS, RP0 			;	banka 1'i seçin (baðlantý noktalarýmýzýn Giriþ / Çýkýþ durumunu deðiþtirmemizi saðlamak için)
+	movlw b'00000000' 			;	PORTB nin tüm çýkýþlarýný ayarlar (A '0' çýkýþ anlamýna gelir, A '1' giriþ anlamýna gelir.
+	movwf TRISB					;	Her bit birimini ayarlayabiliriz. Her bir port 8-bit veya 8 pinlidir.
+	movlw b'00100000' 			;	PORTA'yý, bit 5 hariç tüm çýkýþlarý ayarlayýn. Bit 5, SADECE bir pindir.
+	movwf TRISA 				;	Bir çýkýþa ayarlanamaz
+	bcf STATUS, RP0 			;	Bank 0 seç
+
+
+
+
+setup					;Vermiþ olduðumuz deðiþkenleri ve bayraklarý ana programda import edebilmek için bulundurduðum metod
+
+
+BASLA							;	Program baþlangýcý				
+	MOVWF	PORTB				; ledleri yak
+	call GECÝKME					;	Gecikme ile ledi bir süre açýk býrak
+	CLRF 	PORTB				; ledleri söndür
+	call GECÝKME					;	Gecikme ile ledi bir süre kapalý býrak
+	goto BASLA					;	Sonsuz döngü
+	
+
+
+GECÝKME							
+	movlw d'255'				;	Maksimum sayýyý çalýþma kaydýmýza kopyalamak (ondalýk 255)
+	movwf delay_1				;	w registerinden delay_1 ve delay_2'e kopyala
+	movwf delay_2				;	rutin geri kalaný sýfýra kadar saymaya odaklanacak.
+GECÝKME_DONGU					;	Henüz sýfýr deðerine ulaþmadýðýmýz zaman bu metoda geri dönüyoruz.
+	decfsz delay_1, f			;	Gecikme_1 'de 1'e kadar azaltma ve yanýtý gecikme_1'de sakla
+		goto GECÝKME_DONGU			;	Cevap sýfýr deðilse, o zaman delay_loop metoduna geri dön
+	decfsz delay_2, f			;	Geciktirme 0'dýr, burada sakla
+		goto GECÝKME_DONGU		;   Geciktirme 0 olana kadar dön.
+	return						;	0 olduðunda ana programa dön.
+
+
+
+	end							;	

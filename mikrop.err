@@ -1,0 +1,4 @@
+Message[302] C:\USERS\METALBROTHER\DESKTOP\ENES\MIKROP.ASM 15 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\METALBROTHER\DESKTOP\ENES\MIKROP.ASM 22 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] C:\USERS\METALBROTHER\DESKTOP\ENES\MIKROP.ASM 23 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Error[128]   C:\USERS\METALBROTHER\DESKTOP\ENES\MIKROP.ASM 33 : Missing argument(s)
